@@ -1,5 +1,6 @@
 package esta.bf.sir.security;
 
+import esta.bf.sir.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +47,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/admin/**").hasAnyRole("RESPONSABLE_FORMATION", "ADMIN")
+                .requestMatchers("/api/stats/**").hasAnyRole("RESPONSABLE_FORMATION", "ADMIN")
                 .requestMatchers("/api/candidat/**").hasRole("CANDIDAT")
                 .requestMatchers("/api/formateur/**").hasRole("FORMATEUR")
                 .anyRequest().authenticated()

@@ -1,5 +1,6 @@
 package esta.bf.sir.model;
 
+import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,12 +23,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(callSuper = false)
 @Inheritance(strategy = InheritanceType.JOINED)
-@EntityListeners(AuditingEntityListener.class)
-public class Utilisateur implements UserDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Utilisateur extends BaseEntity implements UserDetails {
 
     @Column(unique = true)
     private String email;
@@ -38,10 +34,6 @@ public class Utilisateur implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime dateCreation;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

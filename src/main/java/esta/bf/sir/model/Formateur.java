@@ -1,5 +1,6 @@
 package esta.bf.sir.model;
 
+import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.Entity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

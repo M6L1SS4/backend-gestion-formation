@@ -155,9 +155,4 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/formateurs/count")
-    public ResponseEntity<Integer> getTotalFormateurs() {
-        return ResponseEntity.ok(formateurService.getTotalFormateurs());
-    }
-
 }
