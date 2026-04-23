@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatsController {
 
     @Autowired
-    private FormateurService formateurService;
+    private FormateurInterneService formateurInterneService;
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,9 +28,9 @@ public class StatsController {
     @Autowired
     private SessionService sessionService;
 
-    @GetMapping("/formateurs/count")
+    @GetMapping("/formateur/interne/count")
     public ResponseEntity<Integer> getTotalFormateurs() {
-        return ResponseEntity.ok(formateurService.getTotalFormateurs());
+        return ResponseEntity.ok(formateurInterneService.getTotalFormateurs());
     }
 
     @GetMapping("/hello")

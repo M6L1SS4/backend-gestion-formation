@@ -1,11 +1,9 @@
 package esta.bf.sir.config;
 
-import esta.bf.sir.model.Formateur;
-import esta.bf.sir.model.Participant;
-import esta.bf.sir.model.Role;
+import esta.bf.sir.model.FormateurInterne;
+import esta.bf.sir.model.enums.Role;
 import esta.bf.sir.model.Utilisateur;
-import esta.bf.sir.repository.FormateurRepository;
-import esta.bf.sir.repository.ParticipantRepository;
+import esta.bf.sir.repository.FormateurInterneRepository;
 import esta.bf.sir.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,22 +12,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
-    
+
     @Autowired
     private UtilisateurRepository utilisateurRepository;
-    
+
     @Autowired
-    private FormateurRepository formateurRepository;
-    
-    @Autowired
-    private ParticipantRepository participantRepository;
-    
+    private FormateurInterneRepository formateurInterneRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Override
     public void run(String... args) throws Exception {
-        // Créer un administrateur
+
+        // ── Admin ────────────────────────────────────────────────────────────
         if (!utilisateurRepository.existsByEmail("admin@formation.com")) {
             Utilisateur admin = new Utilisateur();
             admin.setEmail("admin@formation.com");
@@ -39,39 +35,41 @@ public class DataInitializer implements CommandLineRunner {
             admin.setRole(Role.ADMIN);
             utilisateurRepository.save(admin);
         }
-        
-        // Créer un formateur
-        if (!formateurRepository.existsByEmail("formateur@formation.com")) {
-            Formateur formateur = new Formateur();
-            formateur.setEmail("formateur@formation.com");
-            formateur.setMotDePasse(passwordEncoder.encode("formateur123"));
-            formateur.setNom("Dupont");
-            formateur.setPrenom("Jean");
-            formateur.setRole(Role.FORMATEUR);
-            formateur.setSpecialite("Java Development");
-            formateur.setTypeFormateur("Interne");
-            formateur.setOrganisme("ESTA");
-            formateurRepository.save(formateur);
+
+        // ── Formateur interne ─────────────────────────────────────────────────
+        // 1. On crée d'abord le compte Utilisateur avec le rôle FORMATEUR
+        // 2. On crée ensuite le FormateurInterne lié à cet utilisateur
+        if (!utilisateurRepository.existsByEmail("formateur@formation.com")) {
+            Utilisateur utilisateurFormateur = new Utilisateur();
+            utilisateurFormateur.setEmail("formateur@formation.com");
+            utilisateurFormateur.setMotDePasse(passwordEncoder.encode("formateur123"));
+            utilisateurFormateur.setNom("Dupont");
+            utilisateurFormateur.setPrenom("Jean");
+            utilisateurFormateur.setRole(Role.FORMATEUR);
+            utilisateurFormateur = utilisateurRepository.save(utilisateurFormateur);
+
+            // Le profil formateur lié — sans cours pour l'instant
+            FormateurInterne formateurInterne = new FormateurInterne();
+            formateurInterne.setUtilisateur(utilisateurFormateur);
+            formateurInterneRepository.save(formateurInterne);
         }
-        
-        // Créer un candidat
-        if (!participantRepository.existsByEmail("candidat@formation.com")) {
-            Participant participant = new Participant();
-            participant.setEmail("candidat@formation.com");
-            participant.setMotDePasse(passwordEncoder.encode("candidat123"));
-            participant.setNom("Martin");
-            participant.setPrenom("Sophie");
-            participant.setRole(Role.CANDIDAT);
-            participant.setMatricule(12345);
-            participant.setService("IT");
-            participant.setPoste("Développeur");
-            participant.setTelephone(123456789);
-            participantRepository.save(participant);
+
+        // ── Candidat ──────────────────────────────────────────────────────────
+        // Un candidat est simplement un Utilisateur avec role = CANDIDAT
+        // Pas de FormateurInterne, pas d'entité séparée
+        if (!utilisateurRepository.existsByEmail("candidat@formation.com")) {
+            Utilisateur candidat = new Utilisateur();
+            candidat.setEmail("candidat@formation.com");
+            candidat.setMotDePasse(passwordEncoder.encode("candidat123"));
+            candidat.setNom("Martin");
+            candidat.setPrenom("Sophie");
+            candidat.setRole(Role.CANDIDAT);
+            utilisateurRepository.save(candidat);
         }
-        
+
         System.out.println("=== Données de test initialisées ===");
-        System.out.println("Admin: admin@formation.com / admin123");
-        System.out.println("Formateur: formateur@formation.com / formateur123");
-        System.out.println("Candidat: candidat@formation.com / candidat123");
+        System.out.println("Admin     : admin@formation.com     / admin123");
+        System.out.println("Formateur : formateur@formation.com / formateur123");
+        System.out.println("Candidat  : candidat@formation.com  / candidat123");
     }
 }

@@ -1,9 +1,9 @@
 package esta.bf.sir.repository;
 
-import esta.bf.sir.model.Resultat;
+import esta.bf.sir.model.FormateurExterne;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ResultatRepository extends JpaRepository<Resultat, Long> {
+public interface FormateurExterneRepository extends JpaRepository<FormateurExterne, Long> {
 }

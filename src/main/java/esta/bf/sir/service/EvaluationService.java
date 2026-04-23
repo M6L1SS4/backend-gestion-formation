@@ -10,34 +10,22 @@ import java.util.Optional;
 
 @Service
 public class EvaluationService {
-    
+
     @Autowired
     private EvaluationRepository evaluationRepository;
-    
+
     public List<Evaluation> getAllEvaluations() {
         return evaluationRepository.findAll();
     }
-    
+
     public Optional<Evaluation> getEvaluationById(Long id) {
         return evaluationRepository.findById(id);
     }
-    
+
     public Evaluation createEvaluation(Evaluation evaluation) {
         return evaluationRepository.save(evaluation);
     }
-    
-    public Evaluation updateEvaluation(Long id, Evaluation evaluationDetails) {
-        Evaluation evaluation = evaluationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Evaluation non trouvée"));
-        
-        evaluation.setTitre(evaluationDetails.getTitre());
-        evaluation.setDuree(evaluationDetails.getDuree());
-        evaluation.setTypeEvaluation(evaluationDetails.getTypeEvaluation());
-        evaluation.setSession(evaluationDetails.getSession());
-        
-        return evaluationRepository.save(evaluation);
-    }
-    
+
     public void deleteEvaluation(Long id) {
         evaluationRepository.deleteById(id);
     }

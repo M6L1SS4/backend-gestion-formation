@@ -1,4 +1,4 @@
-package esta.bf.sir.model;
+package esta.bf.sir.model.enums;
 
 public enum Role {
     ADMIN,

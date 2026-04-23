@@ -30,7 +30,7 @@ public class AdminController {
     private DocumentService documentService;
 
     @Autowired
-    private FormateurService formateurService;
+    private FormateurInterneService formateurInterneService;
 
     // Gestion des utilisateurs
     @GetMapping("/utilisateurs")
@@ -56,10 +56,10 @@ public class AdminController {
         return ResponseEntity.ok(coursService.createCours(cours));
     }
 
-    @PutMapping("/cours/{id}")
-    public ResponseEntity<Cours> updateCours(@PathVariable Long id, @RequestBody Cours cours) {
-        return ResponseEntity.ok(coursService.updateCours(id, cours));
-    }
+//    @PutMapping("/cours/{id}")
+//    public ResponseEntity<Cours> updateCours(@PathVariable Long id, @RequestBody Cours cours) {
+//        return ResponseEntity.ok(coursService.updateCours(id, cours));
+//    }
 
     @DeleteMapping("/cours/{id}")
     public ResponseEntity<Void> deleteCours(@PathVariable Long id) {
@@ -99,11 +99,11 @@ public class AdminController {
     public ResponseEntity<Evaluation> createEvaluation(@RequestBody Evaluation evaluation) {
         return ResponseEntity.ok(evaluationService.createEvaluation(evaluation));
     }
-
-    @PutMapping("/evaluations/{id}")
-    public ResponseEntity<Evaluation> updateEvaluation(@PathVariable Long id, @RequestBody Evaluation evaluation) {
-        return ResponseEntity.ok(evaluationService.updateEvaluation(id, evaluation));
-    }
+//
+//    @PutMapping("/evaluations/{id}")
+//    public ResponseEntity<Evaluation> updateEvaluation(@PathVariable Long id, @RequestBody Evaluation evaluation) {
+//        return ResponseEntity.ok(evaluationService.updateEvaluation(id, evaluation));
+//    }
 
     @DeleteMapping("/evaluations/{id}")
     public ResponseEntity<Void> deleteEvaluation(@PathVariable Long id) {
@@ -122,10 +122,10 @@ public class AdminController {
         return ResponseEntity.ok(documentService.createDocument(document));
     }
 
-    @PutMapping("/documents/{id}")
-    public ResponseEntity<Document> updateDocument(@PathVariable Long id, @RequestBody Document document) {
-        return ResponseEntity.ok(documentService.updateDocument(id, document));
-    }
+//    @PutMapping("/documents/{id}")
+//    public ResponseEntity<Document> updateDocument(@PathVariable Long id, @RequestBody Document document) {
+//        return ResponseEntity.ok(documentService.updateDocument(id, document));
+//    }
 
     @DeleteMapping("/documents/{id}")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
@@ -135,23 +135,23 @@ public class AdminController {
 
     // Gestion des formateurs
     @GetMapping("/formateurs")
-    public ResponseEntity<List<Formateur>> getAllFormateurs() {
-        return ResponseEntity.ok(formateurService.getAllFormateurs());
+    public ResponseEntity<List<FormateurInterne>> getAllFormateurs() {
+        return ResponseEntity.ok(formateurInterneService.getAllFormateurs());
     }
 
     @PostMapping("/formateurs/{id}")
-    public ResponseEntity<Formateur> createFormateur( @RequestBody Formateur formateur) {
-        return ResponseEntity.ok(formateurService.createFormateur(formateur));
+    public ResponseEntity<FormateurInterne> createFormateur(@RequestBody FormateurInterne formateurInterne) {
+        return ResponseEntity.ok(formateurInterneService.createFormateur(formateurInterne));
     }
 
     @PutMapping("/formateurs/{id}")
-    public ResponseEntity<Formateur> updateFormateur(@PathVariable Long id, @RequestBody Formateur formateur) {
-        return ResponseEntity.ok(formateurService.updateFormateur(id, formateur));
+    public ResponseEntity<FormateurInterne> updateFormateur(@PathVariable Long id, @RequestBody FormateurInterne formateurInterne) {
+        return ResponseEntity.ok(formateurInterneService.updateFormateur(id, formateurInterne));
     }
 
     @DeleteMapping("/formateurs/{id}")
     public ResponseEntity<Void> deleteFormateur(@PathVariable Long id) {
-        formateurService.deleteFormateur(id);
+        formateurInterneService.deleteFormateur(id);
         return ResponseEntity.ok().build();
     }
 

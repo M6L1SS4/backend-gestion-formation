@@ -1,39 +1,43 @@
 package esta.bf.sir.model;
 
 import esta.bf.sir.model.base.BaseEntity;
+import esta.bf.sir.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Audited
 @EqualsAndHashCode(callSuper = false)
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Utilisateur extends BaseEntity implements UserDetails {
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String motDePasse;
+
+    @Column(nullable = false)
     private String nom;
+
+    @Column(nullable = false)
     private String prenom;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private boolean actif = true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

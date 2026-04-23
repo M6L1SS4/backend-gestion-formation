@@ -15,37 +15,26 @@ import java.util.List;
 @RequestMapping("/api/formateur")
 @PreAuthorize("hasRole('FORMATEUR')")
 public class FormateurController {
-    
+
     @Autowired
     private SessionService sessionService;
-    
+
     @Autowired
     private InscriptionService inscriptionService;
-    
+
     // Consulter les sessions du formateur
     @GetMapping("/sessions")
     public ResponseEntity<List<Session>> getMesSessions() {
         // Note: Filtrer par le formateur connecté
         return ResponseEntity.ok(sessionService.getAllSessions());
     }
-    
+
     // Consulter les participants d'une session
     @GetMapping("/sessions/{sessionId}/participants")
     public ResponseEntity<List<Inscription>> getParticipantsSession(@PathVariable Long sessionId) {
         // Note: Filtrer les inscriptions par session et par formateur connecté
         return ResponseEntity.ok(inscriptionService.getAllInscriptions());
     }
-    
-    // Enregistrer la présence
-    @PutMapping("/inscriptions/{inscriptionId}/presence")
-    public ResponseEntity<Inscription> enregistrerPresence(
-            @PathVariable Long inscriptionId,
-            @RequestBody Boolean presence) {
-        
-        Inscription inscription = inscriptionService.getInscriptionById(inscriptionId)
-                .orElseThrow(() -> new RuntimeException("Inscription non trouvée"));
-        
-        inscription.setPresence(presence);
-        return ResponseEntity.ok(inscriptionService.updateInscription(inscriptionId, inscription));
-    }
+
+
 }
