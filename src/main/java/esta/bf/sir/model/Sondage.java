@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "sondages")
 @Audited
+@Data
 public class Sondage extends BaseEntity {
 
     @Column(nullable = false)

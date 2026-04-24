@@ -2,6 +2,7 @@ package esta.bf.sir.model;
 
 import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 // Juste des informations de contact pour la convocation
 @Entity
 @Table(name = "formateurs_externes")
+@Data
 public class FormateurExterne extends BaseEntity {
 
     @Column(nullable = false)

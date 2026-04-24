@@ -2,6 +2,7 @@ package esta.bf.sir.model;
 
 import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.envers.Audited;
 
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
@@ -10,6 +11,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Entity
 @Table(name = "choix_reponses")
 @Audited
+@Data
 public class ChoixReponse extends BaseEntity {
 
     @ManyToOne

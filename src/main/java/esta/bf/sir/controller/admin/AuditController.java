@@ -1,4 +1,4 @@
-package esta.bf.sir.controller;
+package esta.bf.sir.controller.admin;
 
 import esta.bf.sir.model.audit.SecurityLog;
 import esta.bf.sir.repository.SecurityLogRepository;

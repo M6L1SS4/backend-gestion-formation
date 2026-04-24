@@ -2,6 +2,7 @@ package esta.bf.sir.model;
 
 import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "resultats_evaluations")
 @Audited
+@Data
 public class ResultatEvaluation extends BaseEntity {
 
     @ManyToOne

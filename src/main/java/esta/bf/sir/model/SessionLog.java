@@ -3,12 +3,14 @@ package esta.bf.sir.model;
 import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.TypeActionSession;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 // model/audit/SessionLog.java
 @Entity
 @Table(name = "session_logs")
+@Data
 public class SessionLog extends BaseEntity {
 
     @ManyToOne

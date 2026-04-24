@@ -2,12 +2,14 @@ package esta.bf.sir.model;
 
 import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
 @Table(name = "reponses_candidats")
 @Audited
+@Data
 public class ReponseCandidat extends BaseEntity {
 
     @ManyToOne

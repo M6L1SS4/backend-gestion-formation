@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface FormateurInterneRepository extends JpaRepository<FormateurInterne, Long> {
     Optional<FormateurInterne> findByUtilisateurId(Long id);
+    Boolean existsByUtilisateur_Id(Long id);
+    Optional<FormateurInterne> findByUtilisateur_Id(Long id);
 }

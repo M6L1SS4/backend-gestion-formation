@@ -2,10 +2,12 @@ package esta.bf.sir.model;
 
 import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 
 // model/ReponseSondage.java
 @Entity
 @Table(name = "reponses_sondages")
+@Data
 public class ReponseSondage extends BaseEntity {
 
     @ManyToOne

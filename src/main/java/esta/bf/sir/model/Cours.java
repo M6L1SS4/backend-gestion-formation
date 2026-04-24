@@ -14,6 +14,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Table(name = "cours")
+@Data
 @Audited
 public class Cours extends BaseEntity {
 
@@ -44,5 +45,7 @@ public class Cours extends BaseEntity {
     // Documents associés à ce cours
     @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Document> documents = new ArrayList<>();
+
+    private boolean actif = true;
 
 }

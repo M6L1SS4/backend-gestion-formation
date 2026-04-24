@@ -1,6 +1,7 @@
 package esta.bf.sir.repository;
 
 import esta.bf.sir.model.Utilisateur;
+import esta.bf.sir.model.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +11,5 @@ import java.util.Optional;
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
     Optional<Utilisateur> findByEmail(String email);
     boolean existsByEmail(String email);
+    int countByRole(Role role);
 }

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FormateurExterneRepository extends JpaRepository<FormateurExterne, Long> {
+    Boolean existsByEmail(String email);
 }

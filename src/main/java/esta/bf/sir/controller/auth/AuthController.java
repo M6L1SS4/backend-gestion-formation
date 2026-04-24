@@ -1,4 +1,4 @@
-package esta.bf.sir.controller;
+package esta.bf.sir.controller.auth;
 
 import esta.bf.sir.dto.AuthRequest;
 import esta.bf.sir.dto.AuthResponse;
