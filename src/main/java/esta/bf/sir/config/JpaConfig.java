@@ -1,8 +1,5 @@
 package esta.bf.sir.config;
 
-import jakarta.persistence.EntityManager;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -13,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Optional;
 
 @Configuration
-@EnableJpaAuditing(auditorAwareRef = "auditorAwareImpl")
+@EnableJpaAuditing
 public class JpaConfig {
 
     @Bean
@@ -25,8 +22,4 @@ public class JpaConfig {
                 .map(Authentication::getName);
     }
 
-    @Bean
-    public AuditReader auditReader(EntityManager entityManager) {
-        return AuditReaderFactory.get(entityManager);
-    }
 }

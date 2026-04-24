@@ -4,8 +4,6 @@ import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.StatutSondage;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +12,6 @@ import java.util.List;
 // model/Sondage.java
 @Entity
 @Table(name = "sondages")
-@Audited
 @Data
 public class Sondage extends BaseEntity {
 

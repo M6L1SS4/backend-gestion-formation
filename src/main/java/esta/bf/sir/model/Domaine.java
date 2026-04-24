@@ -4,11 +4,11 @@ import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import org.hibernate.envers.Audited;
+import lombok.Data;
 
 @Entity
 @Table(name = "domaines")
-@Audited
+@Data
 public class Domaine extends BaseEntity {
 
     @Column(nullable = false, unique = true)

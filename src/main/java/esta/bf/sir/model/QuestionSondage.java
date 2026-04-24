@@ -4,7 +4,6 @@ import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.TypeQuestion;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.envers.Audited;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.List;
 // model/QuestionSondage.java
 @Entity
 @Table(name = "questions_sondages")
-@Audited
 @Data
 public class QuestionSondage extends BaseEntity {
 

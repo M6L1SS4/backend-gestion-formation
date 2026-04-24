@@ -4,14 +4,13 @@ import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.StatutInscription;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.envers.Audited;
+
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name = "inscriptions")
-@Audited
 public class Inscription extends BaseEntity {
     // model/Inscription.java
 

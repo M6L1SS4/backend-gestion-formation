@@ -3,8 +3,6 @@ package esta.bf.sir.controller.admin;
 import esta.bf.sir.model.audit.SecurityLog;
 import esta.bf.sir.repository.SecurityLogRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.query.AuditEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +20,7 @@ import java.util.List;
 public class AuditController {
 
     private final SecurityLogRepository securityLogRepository;
-    private final AuditReader auditReader; // Envers
+//    private final AuditReader auditReader; // Envers
 
     // Tous les logs de sécurité
     @GetMapping("/security")
@@ -39,20 +37,20 @@ public class AuditController {
     }
 
     // Historique Envers d'une entité — ex: /audit/envers/Utilisateur/42
-    @GetMapping("/envers/{entite}/{id}")
-    public List<?> getHistoriqueEntite(
-            @PathVariable String entite,
-            @PathVariable Long id
-    ) {
-        try {
-            return auditReader.createQuery()
-                    .forRevisionsOfEntity(
-                            Class.forName(entite), false, true
-                    )
-                    .add(AuditEntity.id().eq(id))
-                    .getResultList();
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Entity class not found: " + entite, e);
-        }
-    }
+//    @GetMapping("/envers/{entite}/{id}")
+//    public List<?> getHistoriqueEntite(
+//            @PathVariable String entite,
+//            @PathVariable Long id
+//    ) {
+//        try {
+//            return auditReader.createQuery()
+//                    .forRevisionsOfEntity(
+//                            Class.forName(entite), false, true
+//                    )
+//                    .add(AuditEntity.id().eq(id))
+//                    .getResultList();
+//        } catch (ClassNotFoundException e) {
+//            throw new IllegalArgumentException("Entity class not found: " + entite, e);
+//        }
+//    }
 }

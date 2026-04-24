@@ -5,8 +5,6 @@ import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.StatutEvaluation;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Data
-@Audited
 public class Evaluation extends BaseEntity {
 
     @Column(nullable = false)
@@ -24,7 +21,6 @@ public class Evaluation extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "domaine_id", nullable = false)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Domaine domaine;
 
     // Une évaluation peut être liée à une session spécifique

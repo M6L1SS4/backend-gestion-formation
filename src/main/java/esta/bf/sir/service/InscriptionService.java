@@ -1,11 +1,13 @@
 package esta.bf.sir.service;
 
+import esta.bf.sir.model.Convocation;
 import esta.bf.sir.model.Inscription;
 import esta.bf.sir.model.Session;
 import esta.bf.sir.model.Utilisateur;
 import esta.bf.sir.model.enums.StatutInscription;
 import esta.bf.sir.model.enums.StatutSession;
 import esta.bf.sir.model.enums.TypeActionSession;
+import esta.bf.sir.repository.ConvocationRepository;
 import esta.bf.sir.repository.InscriptionRepository;
 import esta.bf.sir.repository.SessionRepository;
 import esta.bf.sir.repository.UtilisateurRepository;
@@ -25,10 +27,20 @@ public class InscriptionService {
     private final InscriptionRepository inscriptionRepository;
     private final SessionRepository sessionRepository;
     private final UtilisateurRepository utilisateurRepository;
+    private final ConvocationRepository convocationRepository;
     private final SessionLogService sessionLogService;
 
     public List<Inscription> getInscriptionsBySession(Long sessionId) {
         return inscriptionRepository.findBySession_Id(sessionId);
+    }
+
+    public Inscription getById(Long inscriptionId){
+        return inscriptionRepository.findById(inscriptionId).orElseThrow(() -> new EntityNotFoundException(
+                "Inscription introuvable"));
+    }
+
+    public List<Convocation> getMesConvocations(Long userId){
+        return inscriptionRepository.findConvocationsByUtilisateur_Id(userId);
     }
 
     public List<Inscription> getMesInscriptions(Long utilisateurId) {

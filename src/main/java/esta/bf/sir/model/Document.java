@@ -6,13 +6,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import org.hibernate.envers.Audited;
-
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Data
-@Audited
 public class Document extends BaseEntity {
 
     @Column(nullable = false)
@@ -33,7 +29,6 @@ public class Document extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "cours_id", nullable = false)
-    @Audited(targetAuditMode = NOT_AUDITED)
     private Cours cours;
 
 }

@@ -4,21 +4,17 @@ import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.TypeQuestion;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.envers.Audited;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Data
-@Audited
 public class Question extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "evaluation_id", nullable = false)
-    @Audited(targetAuditMode = NOT_AUDITED)
     private Evaluation evaluation;
 
     @Column(nullable = false, columnDefinition = "TEXT")

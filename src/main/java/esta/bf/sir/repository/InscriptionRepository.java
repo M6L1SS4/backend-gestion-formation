@@ -1,5 +1,6 @@
 package esta.bf.sir.repository;
 
+import esta.bf.sir.model.Convocation;
 import esta.bf.sir.model.Inscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,6 @@ public interface InscriptionRepository extends JpaRepository<Inscription, Long> 
     int countByPresentTrue();
     Optional<Inscription> findBySession_IdAndUtilisateur_Id(Long sessionId, Long utilisateurId);
     List<Inscription> findAll();
+    Optional<Inscription> findById(Long id); // déjà dans JpaRepository
+    List<Convocation> findConvocationsByUtilisateur_Id(Long utilisateurId);
 }

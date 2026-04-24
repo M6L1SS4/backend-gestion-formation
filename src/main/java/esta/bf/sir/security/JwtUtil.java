@@ -1,6 +1,7 @@
 package esta.bf.sir.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,51 +12,49 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    
-    @Value("${jwt.secret:mySecretKey}")
-    private String jwtSecret;
-    
-    @Value("${jwt.expiration:86400}")
-    private int jwtExpiration;
-    
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+
+    private static final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000L;
+
+    @Value("${jwt.secret}")
+    private String secret;
+
+    private SecretKey getKey() {
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
-    
-    public String generateToken(UserDetails userDetails) {
+
+    public String generateAccessToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration * 1000))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+                .signWith(getKey())
                 .compact();
     }
-    
-    public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+
+    public String extractUsername(String token) {
+        return getClaims(token).getSubject();
     }
-    
-    public boolean validateToken(String token, UserDetails userDetails) {
+
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
-            String username = getUsernameFromToken(token);
+            String username = extractUsername(token);
             return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (Exception e) {
             return false;
         }
     }
-    
+
     private boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+        return getClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getKey())
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
-        return expiration.before(new Date());
+                .getBody();
     }
+
+
 }

@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CoursRepository extends JpaRepository<Cours, Long> {
-    int countByActifTrue();
+    long countByActifTrue();
+    boolean existsByDomaine_Id(Long domaineId);
 }

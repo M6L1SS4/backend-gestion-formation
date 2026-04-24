@@ -3,20 +3,15 @@ package esta.bf.sir.model;
 import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.envers.Audited;
-
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 // model/ChoixReponse.java
 @Entity
 @Table(name = "choix_reponses")
-@Audited
 @Data
 public class ChoixReponse extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
-    @Audited(targetAuditMode = NOT_AUDITED)
     private Question question;
 
     @Column(nullable = false)

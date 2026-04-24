@@ -21,4 +21,5 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     Session deleteByFormateurInterne_Id(Long formateurId);
 
     Long countByStatut(StatutSession statut);
+    boolean existsByCours_Id(Long coursId);
 }
