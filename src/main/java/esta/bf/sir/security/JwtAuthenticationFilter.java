@@ -1,5 +1,6 @@
 package esta.bf.sir.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,14 +35,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
-
-        String username = null;
         String jwt = null;
+        String username = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+            jwt = authorizationHeader.substring(7);
+        try {
+            username = jwtUtil.extractUsername(jwt);
+
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
@@ -53,6 +58,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+        }
+        }catch (ExpiredJwtException e) {
+             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+             response.getWriter().write("Token expiré");
+             return;
+
+        }catch (Exception e) { // <-- AJOUTE CECI
+            // Si le token est invalide (malformé, signature incorrecte, "null"),
+            // on l'ignore simplement ou on bloque.
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token invalide ou malformé");
+            return;
         }
 
         filterChain.doFilter(request, response);

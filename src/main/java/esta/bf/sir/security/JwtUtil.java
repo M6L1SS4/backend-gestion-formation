@@ -39,13 +39,20 @@ public class JwtUtil {
         try {
             String username = extractUsername(token);
             return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        }catch (ExpiredJwtException e) {
+            // Le token est expiré, on retourne false au lieu de laisser l'erreur planter l'appli
+            return false;
         } catch (Exception e) {
             return false;
         }
     }
 
     private boolean isTokenExpired(String token) {
-        return getClaims(token).getExpiration().before(new Date());
+        try {
+            return getClaims(token).getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true; // Si l'exception est levée, c'est qu'il est expiré
+        }
     }
 
     private Claims getClaims(String token) {

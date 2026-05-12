@@ -52,15 +52,21 @@ public class AuthService {
                 .build();
     }
 
-    public AuthResponse login(AuthRequest request,
-                              AuthenticationManager authenticationManager) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getMotDePasse()
-                )
-        );
+    public AuthResponse login(AuthRequest request, AuthenticationManager authenticationManager) {
+        try {
+            // 1. On tente l'authentification
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getMotDePasse()
+                    )
+            );
+        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+            // 2. Si ça échoue, on lance une exception métier claire
+            throw new IllegalStateException("Email ou mot de passe incorrect");
+        }
 
+        // 3. Si on arrive ici, c'est que c'est bon
         Utilisateur utilisateur = utilisateurRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur introuvable"));
 

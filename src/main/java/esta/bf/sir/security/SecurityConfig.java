@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -44,8 +45,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/auth/refresh").permitAll().requestMatchers("/api/auth/register").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/refresh","/api/auth/register").permitAll()
+                    .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/auth/logout").authenticated()
                 .requestMatchers("/api/admin/**").hasAnyRole("RESPONSABLE_FORMATION", "ADMIN")
                 .requestMatchers("/api/stats/**").hasAnyRole("RESPONSABLE_FORMATION", "ADMIN")
