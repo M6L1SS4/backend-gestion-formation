@@ -2,6 +2,7 @@ package esta.bf.sir.controller.admin;
 
 import esta.bf.sir.dto.CreateUtilisateurRequest;
 import esta.bf.sir.dto.UpdateUtilisateurRequest;
+import esta.bf.sir.exeption.GlobalExceptionHandler;
 import esta.bf.sir.model.Utilisateur;
 import esta.bf.sir.model.enums.Role;
 import esta.bf.sir.service.UtilisateurService;
@@ -11,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/utilisateurs")
@@ -46,9 +50,9 @@ public class UtilisateurAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        utilisateurService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Map<String, String>> delete(@PathVariable Long id) throws GlobalExceptionHandler {
+            utilisateurService.delete(id);
+            return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/role")

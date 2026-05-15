@@ -1,5 +1,7 @@
 package esta.bf.sir.service;
 
+import esta.bf.sir.dto.CreateSessionRequest;
+import esta.bf.sir.dto.UpdateSessionRequest;
 import esta.bf.sir.model.*;
 import esta.bf.sir.model.enums.StatutSession;
 import esta.bf.sir.model.enums.TypeActionSession;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,32 +42,65 @@ public class SessionService {
         return inscriptionRepository.findBySession_Id(id);
     }
 
-    public Session createSession(Session session) {
-        // Vérification que le cours existe et est actif
-        Cours cours = coursRepository.findById(session.getCours().getId())
+    public Session createSession(CreateSessionRequest request) {
+        // 1. Récupération et validation du cours
+        Cours cours = coursRepository.findById(request.getCoursId())
                 .orElseThrow(() -> new EntityNotFoundException("Cours introuvable"));
+
         if (!cours.isActif()) {
             throw new IllegalStateException("Impossible de créer une session sur un cours inactif");
         }
-        // Vérification cohérence des dates
-        if (!session.getDateDebut().isBefore(session.getDateFin())) {
-            throw new IllegalArgumentException("La date de début doit être avant la date de fin");
-        }
+
+        // 2. Validation des dates
+        validateDates(request.getDateDebut(), request.getDateFin());
+
+        // 3. Mapping du DTO vers l'entité
+        Session session = new Session();
+        session.setLieu(request.getLieu());
+        session.setCapacite(request.getCapacite());
+        session.setDateDebut(request.getDateDebut());
+        session.setDateFin(request.getDateFin());
         session.setCours(cours);
         session.setStatut(StatutSession.PLANIFIEE);
+
+        // 4. Gestion optionnelle des formateurs
+        handleFormateurs(session, request.getFormateurInterneId(), request.getFormateurExterneId());
+
         return sessionRepository.save(session);
     }
 
-    public Session updateSession(Long id, Session updated) {
-        Session session = getSessionById(id);
-        if (session.getStatut() == StatutSession.TERMINEE) {
-            throw new IllegalStateException("Impossible de modifier une session terminée");
+    public Session updateSession(Long id, UpdateSessionRequest request) {
+        Session existingSession = sessionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Session introuvable"));
+
+        validateDates(request.getDateDebut(), request.getDateFin());
+
+        // Mise à jour des champs autorisés
+        existingSession.setLieu(request.getLieu());
+        existingSession.setCapacite(request.getCapacite());
+        existingSession.setDateDebut(request.getDateDebut());
+        existingSession.setDateFin(request.getDateFin());
+
+        handleFormateurs(existingSession, request.getFormateurInterneId(), request.getFormateurExterneId());
+
+        return sessionRepository.save(existingSession);
+    }
+
+    // Méthodes utilitaires pour garder le code propre
+    private void validateDates(LocalDateTime debut, LocalDateTime fin) {
+        if (debut == null || fin == null || !debut.isBefore(fin)) {
+            throw new IllegalArgumentException("La date de début doit être avant la date de fin");
         }
-        session.setDateDebut(updated.getDateDebut());
-        session.setDateFin(updated.getDateFin());
-        session.setLieu(updated.getLieu());
-        session.setCapacite(updated.getCapacite());
-        return sessionRepository.save(session);
+    }
+
+    private void handleFormateurs(Session session, Long interneId, Long externeId) {
+        if (interneId != null) {
+            session.setFormateurInterne(formateurInterneRepository.findById(interneId).orElse(null));
+            session.setFormateurExterne(null); // On s'assure de l'exclusivité
+        } else if (externeId != null) {
+            session.setFormateurExterne(formateurExterneRepository.findById(externeId).orElse(null));
+            session.setFormateurInterne(null);
+        }
     }
 
     public void deleteSession(Long id) {

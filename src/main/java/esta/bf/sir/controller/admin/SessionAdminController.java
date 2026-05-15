@@ -1,5 +1,7 @@
 package esta.bf.sir.controller.admin;
 
+import esta.bf.sir.dto.CreateSessionRequest;
+import esta.bf.sir.dto.UpdateSessionRequest;
 import esta.bf.sir.model.Inscription;
 import esta.bf.sir.model.Session;
 import esta.bf.sir.model.Utilisateur;
@@ -36,15 +38,15 @@ public class SessionAdminController {
     }
 
     @PostMapping
-    public ResponseEntity<Session> create(@RequestBody Session session) {
+    public ResponseEntity<Session> create(@RequestBody CreateSessionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(sessionService.createSession(session));
+                .body(sessionService.createSession(request));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Session> update(@PathVariable Long id,
-                                          @RequestBody Session session) {
-        return ResponseEntity.ok(sessionService.updateSession(id, session));
+                                          @RequestBody UpdateSessionRequest request) {
+        return ResponseEntity.ok(sessionService.updateSession(id, request));
     }
 
     @DeleteMapping("/{id}")
