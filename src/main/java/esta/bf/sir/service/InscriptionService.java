@@ -30,21 +30,22 @@ public class InscriptionService {
     private final ConvocationRepository convocationRepository;
     private final SessionLogService sessionLogService;
 
-    public List<Inscription> getInscriptionsBySession(Long sessionId) {
-        return inscriptionRepository.findBySession_Id(sessionId);
-    }
 
     public Inscription getById(Long inscriptionId){
         return inscriptionRepository.findById(inscriptionId).orElseThrow(() -> new EntityNotFoundException(
                 "Inscription introuvable"));
     }
 
-    public List<Convocation> getMesConvocations(Long userId){
-        return inscriptionRepository.findConvocationsByUtilisateur_Id(userId);
+    public List<Inscription> getInscriptionsBySession(Long sessionId) {
+        return inscriptionRepository.findBySession_Id(sessionId);
     }
 
     public List<Inscription> getMesInscriptions(Long utilisateurId) {
         return inscriptionRepository.findByUtilisateur_Id(utilisateurId);
+    }
+
+    public List<Convocation> getMesConvocations(Long utilisateurId) {
+        return convocationRepository.findByInscription_Utilisateur_Id(utilisateurId);
     }
 
     public List<Inscription> getAllInscriptions() {
@@ -77,7 +78,12 @@ public class InscriptionService {
                 : StatutInscription.EN_ATTENTE);
 
         Inscription saved = inscriptionRepository.save(inscription);
-        sessionLogService.log(session, candidat, TypeActionSession.INSCRIPTION, null);
+        sessionLogService.log(
+                session,
+                candidat,
+                TypeActionSession.INSCRIPTION,
+                "Statut : " + saved.getStatut()
+        );
         return saved;
     }
 
@@ -95,16 +101,40 @@ public class InscriptionService {
     }
 
     public Inscription confirmer(Long inscriptionId) {
-        Inscription inscription = inscriptionRepository.findById(inscriptionId)
-                .orElseThrow(() -> new EntityNotFoundException("Inscription introuvable"));
+        Inscription inscription = getById(inscriptionId);
+
+        if (inscription.getStatut() == StatutInscription.CONFIRMEE) {
+            throw new IllegalStateException("Inscription déjà confirmée");
+        }
+
         inscription.setStatut(StatutInscription.CONFIRMEE);
-        return inscriptionRepository.save(inscription);
+        Inscription saved = inscriptionRepository.save(inscription);
+
+        // ── SessionLog ────────────────────────────────────────────────────
+        sessionLogService.log(
+                inscription.getSession(),
+                inscription.getUtilisateur(),
+                TypeActionSession.INSCRIPTION,
+                "Inscription confirmée par l'admin"
+        );
+
+        return saved;
     }
 
     public Inscription annuler(Long inscriptionId) {
-        Inscription inscription = inscriptionRepository.findById(inscriptionId)
-                .orElseThrow(() -> new EntityNotFoundException("Inscription introuvable"));
+        Inscription inscription = getById(inscriptionId);
+
         inscription.setStatut(StatutInscription.ANNULEE);
-        return inscriptionRepository.save(inscription);
+        Inscription saved = inscriptionRepository.save(inscription);
+
+        // ── SessionLog ────────────────────────────────────────────────────
+        sessionLogService.log(
+                inscription.getSession(),
+                inscription.getUtilisateur(),
+                TypeActionSession.DESINSCRIPTION,
+                "Inscription annulée par l'admin"
+        );
+
+        return saved;
     }
 }

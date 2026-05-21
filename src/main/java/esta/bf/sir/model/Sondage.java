@@ -1,5 +1,6 @@
 package esta.bf.sir.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.StatutSondage;
 import jakarta.persistence.*;
@@ -33,5 +34,6 @@ public class Sondage extends BaseEntity {
     private boolean anonyme;       // réponses anonymes ou non
 
     @OneToMany(mappedBy = "sondage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("sondage-question")
     private List<QuestionSondage> questions = new ArrayList<>();
 }

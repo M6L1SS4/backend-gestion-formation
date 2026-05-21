@@ -1,5 +1,6 @@
 package esta.bf.sir.controller.admin;
 
+import esta.bf.sir.dto.CreateEvaluationRequest;
 import esta.bf.sir.model.ChoixReponse;
 import esta.bf.sir.model.Evaluation;
 import esta.bf.sir.model.Question;
@@ -33,9 +34,9 @@ public class EvaluationAdminController {
     }
 
     @PostMapping
-    public ResponseEntity<Evaluation> create(@RequestBody Evaluation evaluation) {
+    public ResponseEntity<Evaluation> create(@RequestBody CreateEvaluationRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(evaluationService.createEvaluation(evaluation));
+                .body(evaluationService.createEvaluation(request));
     }
 
     @PutMapping("/{id}")

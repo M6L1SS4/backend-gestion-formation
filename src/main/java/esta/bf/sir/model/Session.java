@@ -19,7 +19,7 @@ public class Session extends BaseEntity {
     private LocalDateTime dateDebut;    // date + heure de début
     private LocalDateTime dateFin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "cours_id")
     private Cours cours;
 

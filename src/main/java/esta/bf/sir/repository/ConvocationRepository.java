@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ConvocationRepository extends JpaRepository<Convocation, Long> {
     List<Convocation> findByInscription_Utilisateur_Id(Long utilisateurId);
-
+    List<Convocation> findBySession_Id(Long sessionId);
+    List<Convocation> findByFormateurInterne_Id(Long formateurId);
 }

@@ -1,17 +1,18 @@
 package esta.bf.sir.service;
 
+import esta.bf.sir.dto.CreateSondageRequest;
 import esta.bf.sir.dto.ReponseSondageRequest;
+import esta.bf.sir.dto.UpdateSondageRequest;
 import esta.bf.sir.model.*;
 import esta.bf.sir.model.enums.StatutSondage;
 import esta.bf.sir.model.enums.TypeQuestion;
-import esta.bf.sir.repository.OptionSondageRepository;
-import esta.bf.sir.repository.QuestionSondageRepository;
-import esta.bf.sir.repository.ReponseSondageRepository;
-import esta.bf.sir.repository.SondageRepository;
+import esta.bf.sir.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ public class SondageService {
     private final QuestionSondageRepository questionSondageRepository;
     private final OptionSondageRepository optionSondageRepository;
     private final ReponseSondageRepository reponseSondageRepository;
+    private final DomaineRepository domaineRepository;
 
     public List<Sondage> getAllSondages() {
         return sondageRepository.findAll();
@@ -33,27 +35,64 @@ public class SondageService {
                 .orElseThrow(() -> new EntityNotFoundException("Sondage introuvable : " + id));
     }
 
-    public Sondage createSondage(Sondage sondage) {
+    public Sondage createSondage(CreateSondageRequest request) {
+        // ← on récupère l'entité Domaine depuis l'id
+        Domaine domaine = domaineRepository.findById(request.getDomaineId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Domaine introuvable : " + request.getDomaineId()
+                ));
+
+        Sondage sondage = new Sondage();
+        sondage.setTitre(request.getTitre());
+        sondage.setDescription(request.getDescription());
+        sondage.setDomaine(domaine);          // ← objet complet, pas juste l'id
+        sondage.setDateDebut(LocalDateTime.parse(
+                request.getDateDebut(),
+                DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        ));
+        sondage.setDateFin(LocalDateTime.parse(
+                request.getDateFin(),
+                DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        ));
+        sondage.setAnonyme(request.isAnonyme());
         sondage.setStatut(StatutSondage.PLANIFIE);
         return sondageRepository.save(sondage);
     }
 
-    public Sondage updateSondage(Long id, Sondage updated) {
-        Sondage sondage = getSondageById(id);
+    public Sondage updateSondage(Long id, UpdateSondageRequest request) {
+        Sondage sondage = sondageRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sondage introuvable : " + id));
+
         if (sondage.getStatut() != StatutSondage.PLANIFIE) {
             throw new IllegalStateException("Seul un sondage planifié peut être modifié");
         }
-        sondage.setTitre(updated.getTitre());
-        sondage.setDescription(updated.getDescription());
-        sondage.setDateDebut(updated.getDateDebut());
-        sondage.setDateFin(updated.getDateFin());
-        sondage.setAnonyme(updated.isAnonyme());
+
+        sondage.setTitre(request.getTitre());
+        sondage.setDescription(request.getDescription());
+        sondage.setAnonyme(request.isAnonyme());
+        sondage.setDateDebut(LocalDateTime.parse(
+                request.getDateDebut(),
+                DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        ));
+        sondage.setDateFin(LocalDateTime.parse(
+                request.getDateFin(),
+                DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        ));
+
+        if (request.getDomaineId() != null) {
+            Domaine domaine = domaineRepository.findById(request.getDomaineId())
+                    .orElseThrow(() -> new EntityNotFoundException("Domaine introuvable"));
+            sondage.setDomaine(domaine);
+        }
+
         return sondageRepository.save(sondage);
     }
+
 
     public void deleteSondage(Long id) {
         sondageRepository.deleteById(id);
     }
+
 
     public Sondage changerStatut(Long id, StatutSondage nouveauStatut) {
         Sondage sondage = getSondageById(id);
@@ -68,6 +107,22 @@ public class SondageService {
         question.setSondage(sondage);
         question.setOrdre(sondage.getQuestions().size() + 1);
         return questionSondageRepository.save(question);
+    }
+
+    public void supprimerQuestion(Long questionId) {
+        questionSondageRepository.deleteById(questionId);
+    }
+
+    public QuestionSondage updateQuestion(Long id, QuestionSondage question){
+        QuestionSondage questionToUpdate = questionSondageRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Question introuvable"));
+        questionToUpdate.setEnonce(question.getEnonce());
+        questionToUpdate.setOrdre(question.getOrdre());
+        return questionSondageRepository.save(questionToUpdate);
+    }
+
+    public void supprimerOption(Long optionId) {
+        optionSondageRepository.deleteById(optionId);
     }
 
     public OptionSondage ajouterOption(Long questionId, OptionSondage option) {

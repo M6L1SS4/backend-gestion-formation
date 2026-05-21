@@ -1,5 +1,7 @@
 package esta.bf.sir.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import esta.bf.sir.model.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,6 +17,7 @@ public class ResultatEvaluation extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "evaluation_id", nullable = false)
+    @JsonBackReference("reponse")
     private Evaluation evaluation;
 
     @ManyToOne

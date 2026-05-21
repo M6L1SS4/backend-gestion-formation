@@ -58,6 +58,9 @@ public class SessionAdminController {
     @PatchMapping("/{id}/statut")
     public ResponseEntity<Session> changerStatut(@PathVariable Long id,
                                                  @RequestParam StatutSession statut) {
+        if (statut == null) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(sessionService.changerStatut(id, statut));
     }
 

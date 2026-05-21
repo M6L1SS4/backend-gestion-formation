@@ -3,12 +3,17 @@ package esta.bf.sir.model;
 import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.StatutConvocation;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 
 // model/Convocation.java
 @Entity
 @Table(name = "convocations")
+@Getter
+@Setter
 public class Convocation extends BaseEntity {
 
     // Convocation pour un candidat inscrit

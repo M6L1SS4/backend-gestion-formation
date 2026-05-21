@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/login", "/api/auth/refresh","/api/auth/register").permitAll()
                     .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/auth/logout").authenticated()
+                    .requestMatchers("/api/admin/inscriptions/**").hasAnyRole("RESPONSABLE_FORMATION", "ADMIN")
                 .requestMatchers("/api/admin/**").hasAnyRole("RESPONSABLE_FORMATION", "ADMIN")
                 .requestMatchers("/api/stats/**").hasAnyRole("RESPONSABLE_FORMATION", "ADMIN")
                 .requestMatchers("/api/candidat/**").hasRole("CANDIDAT")
@@ -59,4 +60,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

@@ -1,8 +1,10 @@
 package esta.bf.sir.service;
 
+import esta.bf.sir.dto.CreateEvaluationRequest;
 import esta.bf.sir.model.*;
 import esta.bf.sir.model.enums.StatutEvaluation;
 import esta.bf.sir.model.enums.TypeQuestion;
+import esta.bf.sir.model.map.ResultatEvaluationMapper;
 import esta.bf.sir.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +27,8 @@ public class EvaluationService {
     private final ResultatEvaluationRepository resultatRepository;
     private final ReponsesCandidatRepository reponseCandidatRepository;
     private final SessionRepository sessionRepository;
+    private final DomaineRepository domaineRepository;
+    private final ResultatEvaluationMapper mapper;
 
     // ── CRUD évaluation ───────────────────────────────────────────────────────
 
@@ -40,10 +45,33 @@ public class EvaluationService {
                 .orElseThrow(() -> new EntityNotFoundException("Evaluation introuvable : " + id));
     }
 
-    public Evaluation createEvaluation(Evaluation evaluation) {
-        if (!evaluation.getDateDebut().isBefore(evaluation.getDateFin())) {
-            throw new IllegalArgumentException("La date de début doit être avant la date de fin");
+    public Evaluation createEvaluation(CreateEvaluationRequest request) {
+        Domaine domaine = domaineRepository.findById(request.getDomaineId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Domaine introuvable : " + request.getDomaineId()
+                ));
+
+        Evaluation evaluation = new Evaluation();
+        evaluation.setTitre(request.getTitre());
+        evaluation.setDescription(request.getDescription());
+        evaluation.setDomaine(domaine);
+        evaluation.setDateDebut(LocalDateTime.parse(
+                request.getDateDebut(),
+                DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        ));
+        evaluation.setDateFin(LocalDateTime.parse(
+                request.getDateFin(),
+                DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        ));
+        evaluation.setDureeMinutes(request.getDureeMinutes());
+        evaluation.setNoteMaximale(request.getNoteMaximale());
+        evaluation.setSeuilReussite(request.getSeuilReussite());
+
+        if (request.getSessionId() != null) {
+            sessionRepository.findById(request.getSessionId())
+                    .ifPresent(evaluation::setSession);
         }
+
         evaluation.setStatut(StatutEvaluation.PLANIFIEE);
         return evaluationRepository.save(evaluation);
     }
@@ -167,8 +195,8 @@ public class EvaluationService {
         }
 
         resultat.setNoteObtenue(totalPoints);
-        resultat.setReussi(totalPoints >= evaluation.getSeuilReussite());
-        return resultatRepository.save(resultat);
+        ResultatEvaluation saved = resultatRepository.save(resultat);
+        return saved;
     }
 
     public List<ResultatEvaluation> getResultatsByEvaluation(Long evalId) {

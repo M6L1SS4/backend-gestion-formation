@@ -1,6 +1,8 @@
 package esta.bf.sir.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.StatutEvaluation;
 import jakarta.persistence.*;
@@ -47,5 +49,6 @@ public class Evaluation extends BaseEntity {
     private List<Question> questions = new ArrayList<>();
 
     @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("reponse")
     private List<ResultatEvaluation> resultats = new ArrayList<>();
 }

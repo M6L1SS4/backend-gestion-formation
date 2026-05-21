@@ -1,6 +1,7 @@
 package esta.bf.sir.exeption;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,13 +13,6 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends Throwable {
-
-    @ExceptionHandler(RefreshTokenException.class)
-    public ResponseEntity<Map<String, String>> handleRefreshToken(
-            RefreshTokenException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("error", ex.getMessage()));
-    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleNotFound(
@@ -41,6 +35,7 @@ public class GlobalExceptionHandler extends Throwable {
                 .body(Map.of("error", ex.getMessage()));
     }
 
+    // ← nom de la méthode ≠ type du paramètre était le bug
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, String>> handleAccessDenied(
             AccessDeniedException ex) {
@@ -48,10 +43,10 @@ public class GlobalExceptionHandler extends Throwable {
                 .body(Map.of("error", "Accès refusé"));
     }
 
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> SQLIntegrityConstraintViolationException(
-            AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(Map.of("error", ex.getMessage()));
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrity(
+            DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("error", "Violation de contrainte : vérifiez les données envoyées"));
     }
 }

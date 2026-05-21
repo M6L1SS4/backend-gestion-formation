@@ -1,5 +1,7 @@
 package esta.bf.sir.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import esta.bf.sir.model.base.BaseEntity;
 import esta.bf.sir.model.enums.TypeQuestion;
 import jakarta.persistence.*;
@@ -29,6 +31,7 @@ public class Question extends BaseEntity {
 
     // Choix possibles pour QCM
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ChoixReponse> choix = new ArrayList<>();
 
 }
